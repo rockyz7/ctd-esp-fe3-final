@@ -1,13 +1,7 @@
 import React from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-
-import { FaqsType, faqsData } from "./faqsData";
+import { FaqsType } from "./faqsData";
 import { Box } from "@mui/material";
 import FaqItem from "./faqItem";
-import { GetStaticProps } from "next";
 
 interface FaqsProps {
   faqs: FaqsType[];

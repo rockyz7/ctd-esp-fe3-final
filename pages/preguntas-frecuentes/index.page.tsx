@@ -1,4 +1,4 @@
-import Faqs from "dh-marvel/components/faqs/faqs";
+import Faqs from "dh-marvel/components/faqs/Faqs";
 import { FaqsType, faqsData } from "dh-marvel/components/faqs/faqsData";
 
 const Index = ({ faqsData }: { faqsData: FaqsType[] }) => {
