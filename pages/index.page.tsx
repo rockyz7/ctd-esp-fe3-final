@@ -45,7 +45,7 @@ const Index: NextPage<IndexProps> = ({ data }) => {
 
   const fetchNewData = async (newOffset: number) => {
     const res = await fetch(
-      `http://gateway.marvel.com/v1/public/comics?ts=1000&apikey=9c13f09d734436992a5f806b1b485adf&hash=01f538a62c398bbe3eeeaf75172af46d&limit=12&offset=${newOffset}`
+      `https://gateway.marvel.com/v1/public/comics?ts=1000&apikey=9c13f09d734436992a5f806b1b485adf&hash=01f538a62c398bbe3eeeaf75172af46d&limit=12&offset=${newOffset}`
     );
     const newData = await res.json();
     return newData.data;
