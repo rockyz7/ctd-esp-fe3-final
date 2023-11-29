@@ -110,7 +110,7 @@ const ComicDetails = ({ data }: { data: Comics }) => {
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 {data.results[0].characters.items.length > 0
                   ? data.results[0].characters.items.map((ch) => (
-                      <Typography>
+                      <Typography key={ch.name}>
                         <Link
                           href={`/personajes/${ch.resourceURI.split("/")[6]}`}
                         >
