@@ -62,7 +62,12 @@ const Character = ({
           boxShadow: "0px 1px rgba(0, 0, 0)",
         }}
       >
-        <Image src={img} width={300} height={300} />
+        <Image
+          src={img}
+          width={300}
+          height={300}
+          alt={character.results[0].name}
+        />
         <h2>{character.results[0].name}</h2>
         <p>{character.results[0].description}</p>
       </Box>

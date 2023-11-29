@@ -39,7 +39,7 @@ const Comic: NextPage<ComicProp> = ({ info }) => {
       sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
     >
       <Item>
-        <Image src={img} width={190} height={240} />
+        <Image src={img} width={190} height={240} alt={info.title} />
         <Typography>{info.title}</Typography>
 
         <Box>

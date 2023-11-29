@@ -47,7 +47,12 @@ const ComicDetails = ({ data }: { data: Comics }) => {
               boxShadow: "0px 1px rgba(0, 0, 0)",
             }}
           >
-            <Image src={img} width={250} height={385} />
+            <Image
+              src={img}
+              width={250}
+              height={385}
+              alt={data.results[0].title}
+            />
             <Box
               sx={{
                 padding: "0 25px",
