@@ -3,11 +3,16 @@ import Image from "next/image";
 import React from "react";
 
 const Confirmacion = () => {
-  const existingDataString = localStorage.getItem("orden");
-  //@ts-ignore
-  const existingData = JSON.parse(existingDataString);
+  let existingData;
+
+  if (typeof window !== "undefined") {
+    // Perform localStorage action
+    const existingDataString = localStorage.getItem("orden");
+    //@ts-ignore
+    existingData = JSON.parse(existingDataString);
+  }
+
   const img = existingData?.data.order?.image + ".jpg";
-  console.log(existingData);
 
   return (
     <Box
