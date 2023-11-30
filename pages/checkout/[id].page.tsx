@@ -2,17 +2,25 @@ import LayoutCheckout from "dh-marvel/components/layouts/layout-checkout";
 import React, { useState, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FieldValues } from "react-hook-form/dist/types";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-
+import {
+  Stack,
+  Alert,
+  Snackbar,
+  Typography,
+  Button,
+  StepLabel,
+  Step,
+  Stepper,
+  Box,
+} from "@mui/material";
 import { GetServerSideProps } from "next";
 import { PersonalInfo } from "dh-marvel/components/form/PersonalInfo";
 import { Address } from "dh-marvel/components/form/Address";
 import { Payment } from "dh-marvel/components/form/CardInformation";
+import Image from "next/image";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useRouter } from "next/router";
 
 type FormValues = {
   customer: {
@@ -77,9 +85,22 @@ export type Comics = {
   ];
 };
 
-const Index = ({ dato }: { dato: Comics }) => {
+const Form = ({ dato }: { dato: Comics }) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set<number>());
+  const [open, setOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState("");
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const {
     handleSubmit,
@@ -100,7 +121,7 @@ const Index = ({ dato }: { dato: Comics }) => {
         },
       },
       card: {
-        number: "4242424242424242",
+        number: "4242 4242 4242 4242",
         cvc: "123",
         expDate: "06/07",
         nameOnCard: "User test",
@@ -111,6 +132,8 @@ const Index = ({ dato }: { dato: Comics }) => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data);
   };
+
+  const router = useRouter();
 
   const handleNext = () => {
     handleSubmit(async (data) => {
@@ -127,15 +150,6 @@ const Index = ({ dato }: { dato: Comics }) => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
         setSkipped(newSkipped);
       }
-      console.log({
-        customer: data.customer,
-        card: data.card,
-        order: {
-          name: dato.results[0].title,
-          image: dato.results[0].thumbnail.path,
-          price: Number(dato.results[0].prices[0].price),
-        },
-      });
 
       if (activeStep === steps.length - 1) {
         fetch("/api/checkout", {
@@ -144,42 +158,39 @@ const Index = ({ dato }: { dato: Comics }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            customer: {
-              name: "User",
-              lastname: "Test",
-              email: "user@test.com",
-              address: {
-                address1: "Calle viva 123",
-                address2: "",
-                city: "Buenos Aires",
-                state: "BA",
-                zipCode: "1417",
-              },
-            },
-            card: {
-              number: "4242424242424242",
-              cvc: "123",
-              expDate: "06/07",
-              nameOnCard: "User test",
-            },
+            customer: data.customer,
+            card: data.card,
             order: {
-              name: "hola",
-              image: "aaaa",
-              price: 100,
+              name: dato.results[0].title,
+              image: dato.results[0].thumbnail.path,
+              price: Number(dato.results[0].prices[0].price),
             },
           }),
         })
-          .then((response) => {
+          .then(async (response) => {
             if (!response.ok) {
-              throw new Error("Network response was not ok");
+              const errorData = await response.json();
+              throw new Error(errorData.message);
             }
             return response.json();
           })
-          .then((data) => {
-            console.log(data);
+          .then((apiResponse) => {
+            const existingData = localStorage.getItem("orden");
+
+            if (existingData) {
+              localStorage.setItem("orden", JSON.stringify(apiResponse));
+            } else {
+              localStorage.setItem("orden", JSON.stringify(apiResponse));
+            }
+
+            router.push("/confirmacion-compra");
           })
           .catch((error) => {
             console.error("Error:", error.message);
+
+            setSnackbarMessage(error.message || "An error occurred.");
+
+            setOpen(true);
           });
       }
     })();
@@ -233,51 +244,128 @@ const Index = ({ dato }: { dato: Comics }) => {
     setActiveStep(0);
   };
 
+  const img =
+    dato.results[0].thumbnail.path + "." + dato.results[0].thumbnail.extension;
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const boxStyle = {
+    width: isSmallScreen ? "100%" : "700px",
+    // Add other styles as needed...
+  };
+
   return (
-    <Box sx={{ width: "100%" }}>
-      <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          const stepProps: { completed?: boolean } = {};
-          const labelProps: {
-            optional?: React.ReactNode;
-          } = {};
+    <Box
+      sx={{
+        maxWidth: "1200px",
 
-          return (
-            <Step key={label.label} {...stepProps}>
-              <StepLabel {...labelProps}>{label.label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      {activeStep === steps.length ? (
-        <React.Fragment>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box sx={{ flex: "1 1 auto" }} />
-            <Button onClick={handleReset}>Reset</Button>
-          </Box>
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
-          {steps[activeStep].component}
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Button
-              color="inherit"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
-            <Box sx={{ flex: "1 1 auto" }} />
+        padding: "25px",
+        display: "flex",
+        flexDirection: "column",
 
-            <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
-            </Button>
+        alignItems: "center",
+        gap: 5,
+        margin: "0 auto",
+      }}
+    >
+      <Typography variant="h1" sx={{ fontSize: "22px" }}>
+        {dato.results[0].title}
+      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          width: "100%",
+          gap: 3,
+        }}
+      >
+        <Box sx={boxStyle}>
+          <Stepper activeStep={activeStep}>
+            {steps.map((label, index) => {
+              const stepProps: { completed?: boolean } = {};
+              const labelProps: {
+                optional?: React.ReactNode;
+              } = {};
+
+              return (
+                <Step key={label.label} {...stepProps}>
+                  <StepLabel {...labelProps}>{label.label}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+          {activeStep === steps.length ? (
+            <React.Fragment>
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Box sx={{ flex: "1 1 auto" }} />
+                <Button onClick={handleReset}>Reset</Button>
+              </Box>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <Typography sx={{ mt: 2, mb: 3, fontSize: "18px" }}>
+                {steps[activeStep].label}
+              </Typography>
+              {steps[activeStep].component}
+              <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Button
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Atrás
+                </Button>
+                <Box sx={{ flex: "1 1 auto" }} />
+
+                <Button onClick={handleNext}>
+                  {activeStep === steps.length - 1 ? "Comprar" : "Siguiente"}
+                </Button>
+              </Box>
+            </React.Fragment>
+          )}
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            padding: "10px",
+            boxShadow: "0px 1px rgba(0, 0, 0)",
+          }}
+        >
+          <Image
+            src={img}
+            width={150}
+            height={150}
+            alt={dato.results[0].title}
+          />
+          <Box
+            sx={{
+              padding: "10px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <Typography sx={{ fontSize: "18px" }}>
+              {dato.results[0].title}
+            </Typography>
+            <Typography sx={{ fontSize: "18px" }}>
+              {dato.results[0].prices[0].price}
+            </Typography>
           </Box>
-        </React.Fragment>
-      )}
-      <p>{dato.results[0].title}</p>
+        </Box>
+      </Box>
+      {
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert severity="error">{snackbarMessage}</Alert>
+          </Snackbar>
+        </Stack>
+      }
     </Box>
   );
 };
@@ -300,8 +388,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   };
 };
 
-export default Index;
+export default Form;
 
-Index.getLayout = function getLayout(page: any) {
+Form.getLayout = function getLayout(page: any) {
   return <LayoutCheckout>{page}</LayoutCheckout>;
 };

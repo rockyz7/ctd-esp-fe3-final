@@ -14,7 +14,7 @@ export const PersonalInfo: React.FC<PersonalInfoProps> = ({
   handleSubmit,
 }) => (
   <form onSubmit={handleSubmit(onSubmit)}>
-    <Stack spacing={2} width={400}>
+    <Stack spacing={2} width={"100%"}>
       <TextField
         label="Nombre"
         type="text"
@@ -36,7 +36,7 @@ export const PersonalInfo: React.FC<PersonalInfoProps> = ({
         type="email"
         {...register("customer.email", { required: "E-mail is required" })}
         error={!!errors?.customer?.email}
-        helperText={errors?.customer?.email.message}
+        helperText={errors?.customer?.email?.message}
       />
     </Stack>
   </form>
