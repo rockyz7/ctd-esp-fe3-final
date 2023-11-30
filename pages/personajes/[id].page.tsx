@@ -4,6 +4,7 @@ import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import Head from "next/head";
 
 export interface Props {
   character: {
@@ -43,53 +44,61 @@ const Character = ({
     character.results[0].thumbnail.extension;
 
   return (
-    <Box
-      sx={{
-        padding: " 25px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: " center",
-      }}
-    >
+    <>
+      <Head>
+        <meta
+          name="description"
+          content={`${character.results[0].name} Marvel Character`}
+        />
+      </Head>
       <Box
         sx={{
+          padding: " 25px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: " center",
-          maxWidth: "600px",
-          boxShadow: "0px 1px rgba(0, 0, 0)",
         }}
       >
-        <Image
-          src={img}
-          width={300}
-          height={300}
-          alt={character.results[0].name}
-        />
-        <h2>{character.results[0].name}</h2>
-        <p>{character.results[0].description}</p>
-      </Box>
-      <Box
-        sx={{
-          display: " flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignContent: "center",
-          padding: "25px",
-          marginTop: "20px",
-          maxWidth: "70%",
-        }}
-      >
-        <Typography
-          sx={{ fontSize: "22px", fontWeight: " bold", textAlign: "center" }}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: " center",
+            maxWidth: "600px",
+            boxShadow: "0px 1px rgba(0, 0, 0)",
+          }}
         >
-          Comics relacionados
-        </Typography>
-        <GrillaComics data={comics} />
+          <Image
+            src={img}
+            width={300}
+            height={300}
+            alt={character.results[0].name}
+          />
+          <h2>{character.results[0].name}</h2>
+          <p>{character.results[0].description}</p>
+        </Box>
+        <Box
+          sx={{
+            display: " flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignContent: "center",
+            padding: "25px",
+            marginTop: "20px",
+            maxWidth: "70%",
+          }}
+        >
+          <Typography
+            sx={{ fontSize: "22px", fontWeight: " bold", textAlign: "center" }}
+          >
+            Comics relacionados
+          </Typography>
+          <GrillaComics data={comics} />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
