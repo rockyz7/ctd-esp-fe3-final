@@ -54,12 +54,15 @@ const Confirmacion = () => {
             src={img}
             width={250}
             height={300}
-            alt={existingData?.data?.order?.price.title}
+            alt={existingData?.data?.order?.title}
           />
           <Typography variant="h1" fontSize="22px">
             {existingData?.data?.order?.name}
           </Typography>
-          <Typography>{existingData?.data?.order?.price}</Typography>
+
+          <Typography>
+            {existingData?.data?.order?.price === 0 ? "$48" : "$72"}
+          </Typography>
         </Box>
         <Box
           sx={{
