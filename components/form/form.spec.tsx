@@ -339,6 +339,34 @@ describe("Cita component", () => {
           expect(errorMessage).toBeInTheDocument();
         });
       });
+
+      test("Should throw an error if the card has no funds", async () => {
+        act(() => {
+          userEvent.click(nextBtn);
+          userEvent.click(nextBtn);
+        });
+
+        await waitFor(() => {
+          const input = screen.getByRole("textbox", {
+            name: /número de tarjeta/i,
+          });
+          expect(input).toBeInTheDocument();
+          userEvent.clear(input);
+          userEvent.type(input, "4111 4111 4111 4111");
+        });
+
+        await waitFor(() => {
+          const btn = screen.getByRole("button", { name: /comprar/i });
+          expect(btn).toBeInTheDocument();
+        });
+
+        await waitFor(() => {
+          const errorMessage = screen.getByText(
+            "The card doesn't have the require amount to do the transfer"
+          );
+          expect(errorMessage).toBeInTheDocument();
+        });
+      });
     });
   });
 });

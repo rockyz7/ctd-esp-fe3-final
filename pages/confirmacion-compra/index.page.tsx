@@ -6,7 +6,6 @@ const Confirmacion = () => {
   let existingData;
 
   if (typeof window !== "undefined") {
-    // Perform localStorage action
     const existingDataString = localStorage.getItem("orden");
     //@ts-ignore
     existingData = JSON.parse(existingDataString);

@@ -87,7 +87,6 @@ export type Comics = {
 
 const Form = ({ dato }: { dato: Comics }) => {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set<number>());
   const [open, setOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState("");
 
@@ -141,14 +140,11 @@ const Form = ({ dato }: { dato: Comics }) => {
       const stepErrors = errors[Object.keys(errors)[activeStep]];
 
       if (!stepErrors || Object.keys(stepErrors).length === 0) {
-        let newSkipped = skipped;
-        if (isStepSkipped(activeStep)) {
-          newSkipped = new Set(newSkipped.values());
-          newSkipped.delete(activeStep);
+        if (activeStep < steps.length - 1) {
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        } else {
+          setActiveStep((prevActiveStep) => prevActiveStep);
         }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
       }
 
       if (activeStep === steps.length - 1) {
@@ -232,16 +228,8 @@ const Form = ({ dato }: { dato: Comics }) => {
     },
   ];
 
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step);
-  };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
   };
 
   const img =
@@ -294,11 +282,26 @@ const Form = ({ dato }: { dato: Comics }) => {
               );
             })}
           </Stepper>
-          {activeStep === steps.length ? (
+          {activeStep === steps.length - 1 ? (
             <React.Fragment>
+              <Typography sx={{ mt: 2, mb: 3, fontSize: "18px" }}>
+                {steps[2].label}
+              </Typography>
+              {steps[2].component}
               <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                <Button
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Atrás
+                </Button>
                 <Box sx={{ flex: "1 1 auto" }} />
-                <Button onClick={handleReset}>Reset</Button>
+
+                <Button onClick={handleNext}>
+                  {activeStep === steps.length - 1 ? "Comprar" : "Siguiente"}
+                </Button>
               </Box>
             </React.Fragment>
           ) : (
