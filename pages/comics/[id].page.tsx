@@ -13,8 +13,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Head from "next/head";
 
 const ComicDetails = ({ data }: { data: Comics }) => {
-  console.log(data);
-
   const img =
     data.results[0].thumbnail.path + "." + data.results[0].thumbnail.extension;
 

@@ -252,7 +252,6 @@ const Form = ({ dato }: { dato: Comics }) => {
 
   const boxStyle = {
     width: isSmallScreen ? "100%" : "700px",
-    // Add other styles as needed...
   };
 
   return (
