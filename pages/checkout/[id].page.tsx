@@ -354,7 +354,7 @@ const Form = ({ dato }: { dato: Comics }) => {
               {dato.results[0].title}
             </Typography>
             <Typography sx={{ fontSize: "18px" }}>
-              {dato.results[0].prices[0].price}
+              {dato.results[0].prices[0].price === 0 ? "$48" : "$72"}
             </Typography>
           </Box>
         </Box>

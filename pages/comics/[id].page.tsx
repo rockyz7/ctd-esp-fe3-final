@@ -90,16 +90,21 @@ const ComicDetails = ({ data }: { data: Comics }) => {
                   }}
                 >
                   <Box>
-                    <Typography color="red">
-                      {data.results[0].prices[0].price === 0
-                        ? "Before $48"
-                        : "Now $48"}
-                    </Typography>
-                    <Typography color="blue">
-                      {data.results[0].prices[0].price > 0
-                        ? "Before $87"
-                        : "Now $72"}
-                    </Typography>
+                    {data.results[0].prices[0].price === 0 ? (
+                      <Box>
+                        <Typography color="red">Before $48</Typography>
+                        <Typography color="blue" fontSize="22px">
+                          Now $48
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <Box>
+                        <Typography color="red">Before $87</Typography>
+                        <Typography color="blue" fontSize="22px">
+                          Now $72
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
 
                   <Link href={`/checkout/${data.results[0].id}`}>
