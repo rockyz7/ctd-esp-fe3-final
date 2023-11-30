@@ -95,7 +95,7 @@ const ComicDetails = ({ data }: { data: Comics }) => {
                         ? "Before $48"
                         : "Now $48"}
                     </Typography>
-                    <Typography color="blue" fontWeight="bold" fontSize="22px">
+                    <Typography color="blue">
                       {data.results[0].prices[0].price > 0
                         ? "Before $87"
                         : "Now $72"}
